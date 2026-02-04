@@ -44,13 +44,22 @@ uv run main.py
 - **新增依賴**: `uv add <package>`
 - **執行測試**: 目前尚未建立測試腳本。
 
-## 🚢 部署指南 (Deployment)
+## 🚢 部署與發佈 (Deployment & Distribution)
 
-由於這是一個簡單的 Python 指令碼專案，你可以選擇以下幾種方式進行部署：
+### 1. 打包為執行檔 (Standalone Executable)
 
-### 1. Docker 容器化方案 (推薦)
+如果你需要將程式交給沒有安裝 Python 環境的使用者，可以將其打包：
 
-建立一個 `Dockerfile`：
+```bash
+# 安裝開發依賴
+uv add --dev pyinstaller
+
+# 執行打包 (Windows 會產出 .exe)
+uv run pyinstaller --onefile main.py
+```
+執行檔將位於 `dist/main.exe`。
+
+### 2. Docker 容器化
 
 ```dockerfile
 FROM python:3.12-slim
@@ -63,9 +72,9 @@ RUN uv sync --frozen
 CMD ["uv", "run", "main.py"]
 ```
 
-### 2. GitHub Actions 自動化
+### 3. GitHub Actions CI/CD
 
-建立 `.github/workflows/deploy.yml` 來實現 CI/CD：
+建立 `.github/workflows/deploy.yml`：
 
 ```yaml
 name: CI
@@ -79,13 +88,6 @@ jobs:
         uses: astral-sh/setup-uv@v5
       - name: Run logic
         run: uv run main.py
-```
-
-### 3. 直接在 Server 執行
-
-在伺服器上安裝 `uv` 後，執行：
-```bash
-uv run --with-requirements pyproject.toml main.py
 ```
 
 ---
