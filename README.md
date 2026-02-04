@@ -44,5 +44,49 @@ uv run main.py
 - **新增依賴**: `uv add <package>`
 - **執行測試**: 目前尚未建立測試腳本。
 
+## 🚢 部署指南 (Deployment)
+
+由於這是一個簡單的 Python 指令碼專案，你可以選擇以下幾種方式進行部署：
+
+### 1. Docker 容器化方案 (推薦)
+
+建立一個 `Dockerfile`：
+
+```dockerfile
+FROM python:3.12-slim
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+WORKDIR /app
+COPY . .
+RUN uv sync --frozen
+
+CMD ["uv", "run", "main.py"]
+```
+
+### 2. GitHub Actions 自動化
+
+建立 `.github/workflows/deploy.yml` 來實現 CI/CD：
+
+```yaml
+name: CI
+on: [push]
+jobs:
+  run-app:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+      - name: Run logic
+        run: uv run main.py
+```
+
+### 3. 直接在 Server 執行
+
+在伺服器上安裝 `uv` 後，執行：
+```bash
+uv run --with-requirements pyproject.toml main.py
+```
+
 ---
 Created by [liboler88](https://github.com/liboler88)
