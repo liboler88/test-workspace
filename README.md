@@ -1,94 +1,83 @@
 # 🧪 Test Workspace
 
-一個基於 [uv](https://github.com/astral-sh/uv) 構建的簡潔 Python 專案範本。
+[![Python](https://img.shields.io/badge/Python-3.14.2-blue.svg)](https://www.python.org/)
+[![Manager](https://img.shields.io/badge/Manager-uv-orange.svg)](https://github.com/astral-sh/uv)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+一個極致簡潔且穩定的 Python 專案範本，專為 Windows 環境與現代開發流程優化。整合了 [uv](https://github.com/astral-sh/uv) 套件管理器，提供隨插即用的開發體驗。
+
+## 🌟 特色
+
+- **極速環境管理**: 使用 `uv` 取代傳統 `pip`，同步速度提升 10 倍以上。
+- **Windows 優化**: 內建終端機編碼修正（`sys.stdout` 重新包裝），完美解決繁體中文環境下的 `UnicodeEncodeError`。
+- **一致性保證**: 透過 `.python-version` 與 `uv.lock` 鎖定運行環境，確保「在我這能跑，你那也能跑」。
 
 ## 🚀 快速開始
 
 ### 前置需求
 
-請確保已安裝 `uv`。如果尚未安裝，可以使用以下指令：
+必須安裝 [uv](https://github.com/astral-sh/uv)。若尚未安裝，請以系統管理員權限執行：
 
 ```powershell
 powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-### 安裝步法
+### 安裝與運行
 
-1. **複製專案**
+1. **複製專案並進入目錄**
    ```bash
    git clone https://github.com/liboler88/test-workspace.git
    cd test-workspace
    ```
 
-2. **同步環境**
+2. **建立虛擬環境並同步依賴**
    ```bash
    uv sync
    ```
 
-### 執行程式
+3. **直接執行**
+   ```bash
+   uv run main.py
+   ```
 
+## 📂 檔案結構說明
+
+| 檔案名稱 | 用途說明 |
+| :--- | :--- |
+| `main.py` | **核心進入點**。包含時間顯示與 Windows 編碼修正邏輯。 |
+| `pyproject.toml` | **專案定義檔**。定義名稱、版本、Python 要求及依賴。 |
+| `uv.lock` | **版本鎖定檔**。確保所有環境安裝的套件版本一致。 |
+| `.python-version` | 指名此專案專用的 Python 版本 (`3.14.2`)。 |
+| `.venv/` | 虛擬環境目錄。由 `uv` 自動管理（已在 Git 中忽略）。 |
+
+## 🚢 生產環境與打包
+
+### 1. 打包為獨立執行檔 (.exe)
+適合分發給未安裝 Python 的使用者：
 ```bash
-uv run main.py
-```
-
-## 📂 專案結構
-
-- `main.py`: 專案主要入口點。
-- `pyproject.toml`: 專案配置與依賴定義。
-- `uv.lock`: 鎖定依賴版本，確保環境一致性。
-
-## 🛠️ 開發說明
-
-本專案使用 `uv` 進行管理，這是一個極速的 Python 套件與環境管理器。
-
-- **新增依賴**: `uv add <package>`
-- **執行測試**: 目前尚未建立測試腳本。
-
-## 🚢 部署與發佈 (Deployment & Distribution)
-
-### 1. 打包為執行檔 (Standalone Executable)
-
-如果你需要將程式交給沒有安裝 Python 環境的使用者，可以將其打包：
-
-```bash
-# 安裝開發依賴
+# 安裝打包工具
 uv add --dev pyinstaller
 
-# 執行打包 (Windows 會產出 .exe)
+# 生成單一 EXE 檔案
 uv run pyinstaller --onefile main.py
 ```
-執行檔將位於 `dist/main.exe`。
+輸出結果位於 `dist/main.exe`。
 
-### 2. Docker 容器化
-
+### 2. Docker 容器部署
 ```dockerfile
 FROM python:3.12-slim
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
-
 WORKDIR /app
 COPY . .
 RUN uv sync --frozen
-
 CMD ["uv", "run", "main.py"]
 ```
 
-### 3. GitHub Actions CI/CD
+## 🛠️ 開發常用指令
 
-建立 `.github/workflows/deploy.yml`：
-
-```yaml
-name: CI
-on: [push]
-jobs:
-  run-app:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install uv
-        uses: astral-sh/setup-uv@v5
-      - name: Run logic
-        run: uv run main.py
-```
+- **新增套件**: `uv add <package_name>`
+- **進入虛擬環境**: `source .venv/bin/activate` (或 Windows: `.venv\Scripts\activate`)
+- **檢查目前安裝**: `uv tree`
 
 ---
-Created by [liboler88](https://github.com/liboler88)
+Developed by **[liboler88](https://github.com/liboler88)**
